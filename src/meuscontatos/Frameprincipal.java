@@ -6,6 +6,11 @@
 package meuscontatos;
 
 import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -31,6 +36,7 @@ public class Frameprincipal extends javax.swing.JFrame {
         initComponents();
         preencherJlist();
         iniciaTitulos();
+        iniciaPaineis();
         iniciaBotoes();
         iniciaCombobox();
     }
@@ -77,9 +83,9 @@ public class Frameprincipal extends javax.swing.JFrame {
 
         jList_nomes.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jList_nomes.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jList_nomes.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                jList_nomesMousePressed(evt);
+        jList_nomes.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                jList_nomesValueChanged(evt);
             }
         });
         jscrollp_nomes.setViewportView(jList_nomes);
@@ -186,7 +192,15 @@ public class Frameprincipal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jtf_pesquisarFocusLost
 
-    private void jList_nomesMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList_nomesMousePressed
+    private void jbt_novoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbt_novoActionPerformed
+        visualizarTextbox(false);
+    }//GEN-LAST:event_jbt_novoActionPerformed
+
+    private void jbt_editarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbt_editarActionPerformed
+        visualizarTextbox(true);
+    }//GEN-LAST:event_jbt_editarActionPerformed
+
+    private void jList_nomesValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList_nomesValueChanged
         //Limpa os componentes do jpanel
         jPanel_vis.removeAll();
 
@@ -224,25 +238,30 @@ public class Frameprincipal extends javax.swing.JFrame {
         }
          jPanel_vis.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
         jscrolp_vis.validate();
-    }//GEN-LAST:event_jList_nomesMousePressed
-
-    private void jbt_novoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbt_novoActionPerformed
-        atualizarCompontentes(false);
-    }//GEN-LAST:event_jbt_novoActionPerformed
-
-    private void jbt_editarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbt_editarActionPerformed
-        atualizarCompontentes(true);
-    }//GEN-LAST:event_jbt_editarActionPerformed
+    }//GEN-LAST:event_jList_nomesValueChanged
 
    private void preencherJlist(){
-       String[] nomes = { "<html>Fulano<br><font size=-1>71999929292</font></html>",
-                "<html>Fulanora<br><font size=-1>71999929292</font></html>",
-                "<html>Sicrano<br><font size=-1>71989929292</font></html>",
-                "<html>Fulanoaldo<br><font size=-1>71991929292</font></html>",
-                "<html>Fulaninho<br><font size=-1>71996929292</font></html>",
-                "<html>Sicraninho<br><font size=-1>71929929292</font></html>",
-                "<html>Fulanera<br><font size=-1>71993929292l</font></html>"
-            };
+       pessoas = listarPessoas();
+       String[] nomes;
+       if(!pessoas.isEmpty()){
+            nomes = new String[pessoas.size()];
+            for (int i = 0; i < pessoas.size(); i++) {
+                if(!pessoas.get(i).getTelefoneList().isEmpty()){
+                     nomes[i] = "<html>"+
+                             pessoas.get(i).getNome()+
+                             "<br>->"+
+                             pessoas.get(i).getTelefoneList().get(0)+
+                             "</html>";
+                }else{
+                    nomes[i] = "<html>"+
+                             pessoas.get(i).getNome()+
+                             "</html>";
+                }
+            }
+       }else{
+            nomes = new String[]{"Lista Vazia"};
+       }
+       
        jList_nomes.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = nomes;
             @Override
@@ -250,6 +269,7 @@ public class Frameprincipal extends javax.swing.JFrame {
             @Override
             public String getElementAt(int i) { return strings[i]; }
         });
+       
    }
    
    private void iniciaTitulos(){
@@ -264,6 +284,16 @@ public class Frameprincipal extends javax.swing.JFrame {
         label_titulo[6] = new JLabel("<html><h3>Eendereço</h3></html>");
    }
    
+   private void iniciaPaineis(){
+       jpanelft = new JPanel();
+       jpaneltitulo = new JPanel();
+       jpanelbotoes = new JPanel();
+       //Jpanel com layout box, que permite adicionar na vertical ou na horizontal
+       jpanelft.setLayout(new BoxLayout(jpanelft, BoxLayout.LINE_AXIS));
+       jpaneltitulo.setLayout(new BoxLayout(jpaneltitulo, BoxLayout.PAGE_AXIS));
+       jpanelbotoes.setLayout(new BoxLayout(jpanelbotoes, BoxLayout.LINE_AXIS));
+   }
+   
    private void iniciaBotoes(){
        jbsalvar = new JButton("Salvar");
        jbcancelar = new JButton("Cancelar");
@@ -274,26 +304,18 @@ public class Frameprincipal extends javax.swing.JFrame {
        jc_estadocivil = new JComboBox(estadoscivis);
    }
    
-   private void atualizarCompontentes(boolean com_valores){
+   private void visualizarTextbox(boolean modoeditar){
        //Limpa os componentes do jpanel
         jPanel_vis.removeAll();
 
         //Variáveis dos componentes
-        JTextField[] jtextf_info;
         jtextf_info = new JTextField[7];
-        JPanel jpanelft = new JPanel();
-        JPanel jpaneltitulo = new JPanel();
-        JPanel jpanelbotoes = new JPanel();
-        if(com_valores){
+        if(modoeditar){
             jtextf_info[0] = new JTextField("nome de fulano");
         }else{
             jtextf_info[0] = new JTextField();
         }
         
-        //Jpanel com layout box, que permite adicionar na vertical ou na horizontal
-        jpanelft.setLayout(new BoxLayout(jpanelft, BoxLayout.LINE_AXIS));
-        jpaneltitulo.setLayout(new BoxLayout(jpaneltitulo, BoxLayout.PAGE_AXIS));
-        jpanelbotoes.setLayout(new BoxLayout(jpanelbotoes, BoxLayout.LINE_AXIS));
         //carregando a imagem em tamanho 60x60
         jlabel_foto = new JLabel(new ImageIcon(new ImageIcon(getClass()
                 .getResource("media/user1.png")).getImage()
@@ -315,7 +337,7 @@ public class Frameprincipal extends javax.swing.JFrame {
         jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
         
         for (int i = 1; i < 7; i++) {
-            if(com_valores){
+            if(modoeditar){
                 jtextf_info[i] = new JTextField("Informação "+i);
             }else{
                 jtextf_info[i] = new JTextField();
@@ -334,6 +356,17 @@ public class Frameprincipal extends javax.swing.JFrame {
         jscrolp_vis.validate();
    }
     
+   private List<Pessoa> listarPessoas(){
+       EntityManagerFactory factory = Persistence.
+               createEntityManagerFactory("MeusContatosAppPU");
+       EntityManager entitymanager = factory.createEntityManager();
+       List<Pessoa> pe;
+       pe = entitymanager.createNamedQuery("Pessoa.findAll",Pessoa.class)
+               .getResultList();
+       entitymanager.close();
+       factory.close();
+       return pe;
+   }
     /**
      * @param args the command line arguments
      */
@@ -368,11 +401,19 @@ public class Frameprincipal extends javax.swing.JFrame {
         });
     }
 
+    List<Pessoa> pessoas;
     JLabel[] label_titulo;
     JLabel jlabel_foto;
+    JPanel jpanelft;
+    JPanel jpaneltitulo;
+    JPanel jpanelbotoes;
     JButton jbsalvar ;
     JButton jbcancelar;
+    JTextField[] jtextf_info;
     JComboBox jc_estadocivil;
+    List<JTextField> tf_telefones;
+    List<JTextField> tf_emails;
+    List<JTextField> tf_enderecos;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList<String> jList_nomes;
     private javax.swing.JPanel jPanel_menu;
