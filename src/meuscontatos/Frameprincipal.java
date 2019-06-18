@@ -208,8 +208,8 @@ public class Frameprincipal extends javax.swing.JFrame {
         //Variáveis dos componentes
         JLabel[] label_info;
         label_info = new JLabel[7];
-        JPanel jpanelft = new JPanel();
-        JPanel jpaneltitulo = new JPanel();
+        jpanelft = new JPanel();
+        jpaneltitulo = new JPanel();
         label_info[0] = new JLabel("Fulano de tal");
 
         //Jpanel com layout box, que permite adicionar na vertical ou na horizontal
@@ -273,18 +273,55 @@ public class Frameprincipal extends javax.swing.JFrame {
    }
    
    private void iniciaTitulos(){
-        jPanel_vis.setLayout(new BoxLayout(jPanel_vis, BoxLayout.PAGE_AXIS));
-        label_titulo = new JLabel[7];
+        label_titulo = new JLabel[8];
         label_titulo[0] = new JLabel("<html><h3>Nome</h3></html>");
-        label_titulo[1] = new JLabel("<html><h3>CPF</h3></html>");
-        label_titulo[2] = new JLabel("<html><h3>Estado Civil</h3></html>");
-        label_titulo[3] = new JLabel("<html><h3>Profissão</h3></html>");
-        label_titulo[4] = new JLabel("<html><h3>Telefone</h3></html>");
-        label_titulo[5] = new JLabel("<html><h3>E-mail</h3></html>");
-        label_titulo[6] = new JLabel("<html><h3>Eendereço</h3></html>");
+        label_titulo[1] = new JLabel("<html><h3>Sobrenome</h3></html>");
+        label_titulo[2] = new JLabel("<html><h3>CPF</h3></html>");
+        label_titulo[3] = new JLabel("<html><h3>Estado Civil</h3></html>");
+        label_titulo[4] = new JLabel("<html><h3>Profissão</h3></html>");
+        label_titulo[5] = new JLabel("<html><h3>Telefone</h3></html>");
+        label_titulo[6] = new JLabel("<html><h3>E-mail</h3></html>");
+        label_titulo[7] = new JLabel("<html><h3>Eendereço</h3></html>");
+        for (JLabel label_titulo1 : label_titulo) {
+            label_titulo1.setAlignmentX((float) 0.1);
+        }
+   }
+   
+   private void carregaTextfieldPessoa(){
+       int sel = jList_nomes.getSelectedIndex();
+       jtextf_info[0] = new JTextField(pessoas.get(sel).getNome());
+       jtextf_info[1] = new JTextField(pessoas.get(sel).getSobrenome());
+       jtextf_info[2] = new JTextField(pessoas.get(sel).getCpf());
+       jtextf_info[3] = new JTextField(pessoas.get(sel).getProfissao());
+       tf_telefones = new ArrayList();
+       tf_emails = new ArrayList();
+       tf_enderecos = new ArrayList();
+       for(Telefone tel : pessoas.get(sel).getTelefoneList()){
+           JTextField[] jttel = new JTextField[2];
+           jttel[0] = new JTextField(tel.getTipo());
+           jttel[1] = new JTextField(tel.getTelefone());
+           tf_telefones.add(jttel);
+       }
+       for(Email email : pessoas.get(sel).getEmailList()){
+           JTextField[] jtemail = new JTextField[2];
+           jtemail[0] = new JTextField(email.getTipo());
+           jtemail[1] = new JTextField(email.getEmail());
+           tf_emails.add(jtemail);
+       }
+       for(Endereco end : pessoas.get(sel).getEnderecoList()){
+           JTextField[] jtend = new JTextField[6];
+           jtend[0] = new JTextField(end.getTipo());
+           jtend[1] = new JTextField(end.getLogradouro());
+           jtend[2] = new JTextField(end.getBairro());
+           jtend[3] = new JTextField(end.getCidade());
+           jtend[4] = new JTextField(end.getEstado());
+           jtend[5] = new JTextField(end.getCep());
+           tf_emails.add(jtend);
+       }
    }
    
    private void iniciaPaineis(){
+       jPanel_vis.setLayout(new BoxLayout(jPanel_vis, BoxLayout.PAGE_AXIS));
        jpanelft = new JPanel();
        jpaneltitulo = new JPanel();
        jpanelbotoes = new JPanel();
@@ -308,21 +345,18 @@ public class Frameprincipal extends javax.swing.JFrame {
        //Limpa os componentes do jpanel
         jPanel_vis.removeAll();
 
-        //Variáveis dos componentes
-        jtextf_info = new JTextField[7];
+        //Informações
+        jtextf_info = new JTextField[5];
+        jtextf_info[0] = new JTextField();
         if(modoeditar){
-            jtextf_info[0] = new JTextField("nome de fulano");
-        }else{
-            jtextf_info[0] = new JTextField();
+            carregaTextfieldPessoa();
         }
-        
         //carregando a imagem em tamanho 60x60
         jlabel_foto = new JLabel(new ImageIcon(new ImageIcon(getClass()
                 .getResource("media/user1.png")).getImage()
                 .getScaledInstance(60, 60, java.awt.Image.SCALE_SMOOTH)));
 
         jpaneltitulo.add(label_titulo[0]);
-        label_titulo[0].setAlignmentX((float) 0.1);
         jpaneltitulo.add(jtextf_info[0]);
         jpanelft.add(jpaneltitulo);
         jpanelft.add(Box.createHorizontalGlue());
@@ -336,19 +370,22 @@ public class Frameprincipal extends javax.swing.JFrame {
         jPanel_vis.add(jpanelft);
         jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
         
-        for (int i = 1; i < 7; i++) {
-            if(modoeditar){
-                jtextf_info[i] = new JTextField("Informação "+i);
-            }else{
+        for (int i = 1; i < 5; i++) {
+            if(!modoeditar){
                 jtextf_info[i] = new JTextField();
             }
-            label_titulo[i].setAlignmentX((float) 0.1);
             jPanel_vis.add(label_titulo[i]);
-            if (i == 2) {
+            if (i == 3) {
              jPanel_vis.add(jc_estadocivil);
+            } else if (i == 4) {
+                jPanel_vis.add(jtextf_info[i-1]);
+                jPanel_vis.add(jtextf_info[i-1]);
             } else {
-             jPanel_vis.add(jtextf_info[i]);
+                jPanel_vis.add(jtextf_info[i]);
+                jPanel_vis.add(jtextf_info[i]);
             }
+                
+            
             jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
         }
         jPanel_vis.add(jpanelbotoes);
@@ -411,9 +448,9 @@ public class Frameprincipal extends javax.swing.JFrame {
     JButton jbcancelar;
     JTextField[] jtextf_info;
     JComboBox jc_estadocivil;
-    List<JTextField> tf_telefones;
-    List<JTextField> tf_emails;
-    List<JTextField> tf_enderecos;
+    List<JTextField[]> tf_telefones;
+    List<JTextField[]> tf_emails;
+    List<JTextField[]> tf_enderecos;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList<String> jList_nomes;
     private javax.swing.JPanel jPanel_menu;
