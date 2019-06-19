@@ -320,6 +320,31 @@ public class Frameprincipal extends javax.swing.JFrame {
        }
    }
    
+   private void novoTextfield(){
+        jtextf_info[0] = new JTextField();
+        jtextf_info[1] = new JTextField();
+        jtextf_info[2] = new JTextField();
+        jtextf_info[3] = new JTextField();
+        jtextf_info[4] = new JTextField();
+        tf_telefones = new ArrayList();
+        JTextField[] jttel = new JTextField[2];
+        jttel[0] = new JTextField();
+        jttel[1] = new JTextField();
+        tf_telefones.add(jttel);
+        JTextField[] jtemail = new JTextField[2];
+        jtemail[0] = new JTextField();
+        jtemail[1] = new JTextField();
+        tf_emails.add(jtemail);
+        JTextField[] jtend = new JTextField[6];
+        jtend[0] = new JTextField();
+        jtend[1] = new JTextField();
+        jtend[2] = new JTextField();
+        jtend[3] = new JTextField();
+        jtend[4] = new JTextField();
+        jtend[5] = new JTextField();
+        tf_emails.add(jtend);
+   }
+   
    private void iniciaPaineis(){
        jPanel_vis.setLayout(new BoxLayout(jPanel_vis, BoxLayout.PAGE_AXIS));
        jpanelft = new JPanel();
@@ -347,9 +372,10 @@ public class Frameprincipal extends javax.swing.JFrame {
 
         //Informações
         jtextf_info = new JTextField[5];
-        jtextf_info[0] = new JTextField();
         if(modoeditar){
             carregaTextfieldPessoa();
+        }else{
+            novoTextfield();
         }
         //carregando a imagem em tamanho 60x60
         jlabel_foto = new JLabel(new ImageIcon(new ImageIcon(getClass()
@@ -370,26 +396,65 @@ public class Frameprincipal extends javax.swing.JFrame {
         jPanel_vis.add(jpanelft);
         jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
         
-        for (int i = 1; i < 5; i++) {
-            if(!modoeditar){
-                jtextf_info[i] = new JTextField();
-            }
+        for (int i = 1; i < 3; i++) {
             jPanel_vis.add(label_titulo[i]);
-            if (i == 3) {
-             jPanel_vis.add(jc_estadocivil);
-            } else if (i == 4) {
-                jPanel_vis.add(jtextf_info[i-1]);
-                jPanel_vis.add(jtextf_info[i-1]);
-            } else {
-                jPanel_vis.add(jtextf_info[i]);
-                jPanel_vis.add(jtextf_info[i]);
-            }
-                
-            
+            jPanel_vis.add(jtextf_info[i]);
             jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
         }
+        jPanel_vis.add(label_titulo[3]);
+        jPanel_vis.add(jc_estadocivil);
+        jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
+        jPanel_vis.add(label_titulo[4]);
+        jPanel_vis.add(jtextf_info[4]);
+        jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
+        jPanel_vis.add(label_titulo[5]);
+        for (JTextField[] jtftel : tf_telefones) {
+            JPanel jptel = new JPanel();
+            jptel.setLayout(new BoxLayout(jptel, BoxLayout.LINE_AXIS));
+            jptel.add(jtftel[0]);
+            jptel.add(jtftel[1]);
+            jPanel_vis.add(jptel);
+        }
+        jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
+        jPanel_vis.add(label_titulo[6]);
+        for (JTextField[] jtfemail : tf_emails) {
+            JPanel jpemail = new JPanel();
+            jpemail.setLayout(new BoxLayout(jpemail, BoxLayout.LINE_AXIS));
+            jpemail.add(jtfemail[0]);
+            jpemail.add(jtfemail[1]);
+            jPanel_vis.add(jpemail);
+        }
+        jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
+        jPanel_vis.add(label_titulo[5]);
+        for (JTextField[] jtfen : tf_enderecos) {
+            JPanel jptel = new JPanel();
+            JPanel jptel2 = new JPanel();
+            JPanel jptel3 = new JPanel();
+            jptel.setLayout(new BoxLayout(jptel, BoxLayout.LINE_AXIS));
+            jptel2.setLayout(new BoxLayout(jptel, BoxLayout.PAGE_AXIS));
+            jptel3.setLayout(new BoxLayout(jptel, BoxLayout.PAGE_AXIS));
+            jptel2.add(new JLabel("Tipo"));
+            jptel2.add(new JLabel("Logradouro"));
+            jptel2.add(new JLabel("Bairro"));
+            jptel2.add(new JLabel("Cidade"));
+            jptel2.add(new JLabel("Estado"));
+            jptel2.add(new JLabel("Cep"));
+            jptel3.add(jtfen[0]);
+            jptel3.add(jtfen[1]);
+            jptel3.add(jtfen[2]);
+            jptel3.add(jtfen[3]);
+            jptel3.add(jtfen[4]);
+            jptel3.add(jtfen[5]);
+            jptel3.add(jtfen[6]);
+            jptel.add(jptel2);
+            jptel.add(jptel3);
+            jPanel_vis.add(jptel);
+        }
+        jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
+        
         jPanel_vis.add(jpanelbotoes);
         jPanel_vis.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
+        
         jscrolp_vis.validate();
    }
     
