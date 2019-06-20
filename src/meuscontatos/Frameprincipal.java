@@ -281,7 +281,7 @@ public class Frameprincipal extends javax.swing.JFrame {
         label_titulo[4] = new JLabel("<html><h3>Profissão</h3></html>");
         label_titulo[5] = new JLabel("<html><h3>Telefone</h3></html>");
         label_titulo[6] = new JLabel("<html><h3>E-mail</h3></html>");
-        label_titulo[7] = new JLabel("<html><h3>Eendereço</h3></html>");
+        label_titulo[7] = new JLabel("<html><h3>Endereço</h3></html>");
         for (JLabel label_titulo1 : label_titulo) {
             label_titulo1.setAlignmentX((float) 0.1);
         }
@@ -331,10 +331,12 @@ public class Frameprincipal extends javax.swing.JFrame {
         jttel[0] = new JTextField();
         jttel[1] = new JTextField();
         tf_telefones.add(jttel);
+        tf_emails = new ArrayList();
         JTextField[] jtemail = new JTextField[2];
         jtemail[0] = new JTextField();
         jtemail[1] = new JTextField();
         tf_emails.add(jtemail);
+        tf_enderecos = new ArrayList();
         JTextField[] jtend = new JTextField[6];
         jtend[0] = new JTextField();
         jtend[1] = new JTextField();
@@ -342,7 +344,7 @@ public class Frameprincipal extends javax.swing.JFrame {
         jtend[3] = new JTextField();
         jtend[4] = new JTextField();
         jtend[5] = new JTextField();
-        tf_emails.add(jtend);
+        tf_enderecos.add(jtend);
    }
    
    private void iniciaPaineis(){
@@ -425,30 +427,29 @@ public class Frameprincipal extends javax.swing.JFrame {
             jPanel_vis.add(jpemail);
         }
         jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
-        jPanel_vis.add(label_titulo[5]);
+        jPanel_vis.add(label_titulo[7]);
         for (JTextField[] jtfen : tf_enderecos) {
-            JPanel jptel = new JPanel();
-            JPanel jptel2 = new JPanel();
-            JPanel jptel3 = new JPanel();
-            jptel.setLayout(new BoxLayout(jptel, BoxLayout.LINE_AXIS));
-            jptel2.setLayout(new BoxLayout(jptel, BoxLayout.PAGE_AXIS));
-            jptel3.setLayout(new BoxLayout(jptel, BoxLayout.PAGE_AXIS));
-            jptel2.add(new JLabel("Tipo"));
-            jptel2.add(new JLabel("Logradouro"));
-            jptel2.add(new JLabel("Bairro"));
-            jptel2.add(new JLabel("Cidade"));
-            jptel2.add(new JLabel("Estado"));
-            jptel2.add(new JLabel("Cep"));
-            jptel3.add(jtfen[0]);
-            jptel3.add(jtfen[1]);
-            jptel3.add(jtfen[2]);
-            jptel3.add(jtfen[3]);
-            jptel3.add(jtfen[4]);
-            jptel3.add(jtfen[5]);
-            jptel3.add(jtfen[6]);
-            jptel.add(jptel2);
-            jptel.add(jptel3);
-            jPanel_vis.add(jptel);
+            JPanel jpend = new JPanel();
+            JPanel jpend2 = new JPanel();
+            JPanel jpend3 = new JPanel();
+            jpend.setLayout(new BoxLayout(jpend, BoxLayout.LINE_AXIS));
+            jpend2.setLayout(new BoxLayout(jpend2, BoxLayout.PAGE_AXIS));
+            jpend3.setLayout(new BoxLayout(jpend3, BoxLayout.PAGE_AXIS));
+            jpend2.add(new JLabel("Tipo"));
+            jpend2.add(new JLabel("Logradouro"));
+            jpend2.add(new JLabel("Bairro"));
+            jpend2.add(new JLabel("Cidade"));
+            jpend2.add(new JLabel("Estado"));
+            jpend2.add(new JLabel("Cep"));
+            jpend3.add(jtfen[0]);
+            jpend3.add(jtfen[1]);
+            jpend3.add(jtfen[2]);
+            jpend3.add(jtfen[3]);
+            jpend3.add(jtfen[4]);
+            jpend3.add(jtfen[5]);
+            jpend.add(jpend2);
+            jpend.add(jpend3);
+            jPanel_vis.add(jpend);
         }
         jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
         
