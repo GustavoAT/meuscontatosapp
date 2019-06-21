@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Gusta
+ * @author Gustavo
  */
 @Entity
 @Table(name = "endereco")
@@ -136,6 +136,13 @@ public class Endereco implements Serializable {
 
     public void setCep(String cep) {
         this.cep = cep;
+    }
+    
+    public String getEndeCompleto(){
+        String endereco;
+        endereco = logradouro + ", " + bairro + "." 
+                + cidade + " - " + estado + " Cep:" + cep;
+        return endereco;
     }
 
     public Pessoa getIdPessoa() {

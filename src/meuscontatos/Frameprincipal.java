@@ -204,40 +204,53 @@ public class Frameprincipal extends javax.swing.JFrame {
         //Limpa os componentes do jpanel
         jPanel_vis.removeAll();
 
+        if(!pessoas.isEmpty()){
+            carregaLabelPessoa();
+            //carregando a imagem em tamanho 60x60
+            jlabel_foto = new JLabel(new ImageIcon(new ImageIcon(getClass()
+                    .getResource("media/user1.png")).getImage()
+                    .getScaledInstance(60, 60, java.awt.Image.SCALE_SMOOTH)));
 
-        //Variáveis dos componentes
-        JLabel[] label_info;
-        label_info = new JLabel[7];
-        jpanelft = new JPanel();
-        jpaneltitulo = new JPanel();
-        label_info[0] = new JLabel("Fulano de tal");
-
-        //Jpanel com layout box, que permite adicionar na vertical ou na horizontal
-        jpanelft.setLayout(new BoxLayout(jpanelft, BoxLayout.LINE_AXIS));
-        jpaneltitulo.setLayout(new BoxLayout(jpaneltitulo, BoxLayout.PAGE_AXIS));
-        //carregando a imagem em tamanho 60x60
-        jlabel_foto = new JLabel(new ImageIcon(new ImageIcon(getClass()
-                .getResource("media/user1.png")).getImage()
-                .getScaledInstance(60, 60, java.awt.Image.SCALE_SMOOTH)));
-
-        jpaneltitulo.add(label_titulo[0]);
-        label_titulo[0].setAlignmentX((float) 0.1);
-        jpaneltitulo.add(label_info[0]);
-        jpanelft.add(jpaneltitulo);
-        jpanelft.add(Box.createHorizontalGlue());
-        jpanelft.add(jlabel_foto);
-        jpanelft.setAlignmentX((float) 0.05);
-        jPanel_vis.add(jpanelft);
-        jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
-        for (int i = 1; i < 7; i++) {
-           label_info[i] = new JLabel("item n - "+i);
-           label_titulo[i].setAlignmentX((float) 0.1);
-           jPanel_vis.add(label_titulo[i]);
-           jPanel_vis.add(label_info[i]);
-           jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
+            jpaneltitulo.add(label_titulo[0]);
+            jpaneltitulo.add(label_info[0]);
+            jpanelft.add(jpaneltitulo);
+            jpanelft.add(Box.createHorizontalGlue());
+            jpanelft.add(jlabel_foto);
+            jPanel_vis.add(jpanelft);
+            jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
+            for (int i = 2; i < 4; i++) {
+               jPanel_vis.add(label_titulo[i]);
+               jPanel_vis.add(label_info[i]);
+               jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
+            }
+            int index = jList_nomes.getSelectedIndex();
+            jPanel_vis.add(label_titulo[4]);
+            for(Telefone te : pessoas.get(index).getTelefoneList()){
+                JPanel jptel = new JPanel();
+                jptel.setLayout(new BoxLayout(jptel, BoxLayout.LINE_AXIS));
+                jptel.add(new JLabel(te.getTipo()+":"));
+                jptel.add(new JLabel(te.getTelefone()));
+                jPanel_vis.add(jptel);
+            }
+            jPanel_vis.add(label_titulo[5]);
+            for(Email ema : pessoas.get(index).getEmailList()){
+                JPanel jpmail = new JPanel();
+                jpmail.setLayout(new BoxLayout(jpmail, BoxLayout.LINE_AXIS));
+                jpmail.add(new JLabel(ema.getTipo()+":"));
+                jpmail.add(new JLabel(ema.getEmail()));
+                jPanel_vis.add(jpmail);
+            }
+            jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
+            for(Endereco end : pessoas.get(index).getEnderecoList()){
+                JPanel jpend = new JPanel();
+                jpend.setLayout(new BoxLayout(jpend, BoxLayout.LINE_AXIS));
+                jpend.add(new JLabel(end.getTipo()+":"));
+                jpend.add(new JLabel(end.getEndeCompleto()));
+                jPanel_vis.add(jpend);
+            }
+             jPanel_vis.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
+            jscrolp_vis.validate();
         }
-         jPanel_vis.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
-        jscrolp_vis.validate();
     }//GEN-LAST:event_jList_nomesValueChanged
 
    private void preencherJlist(){
@@ -269,7 +282,7 @@ public class Frameprincipal extends javax.swing.JFrame {
             @Override
             public String getElementAt(int i) { return strings[i]; }
         });
-       
+       jList_nomes.setSelectedIndex(0);
    }
    
    private void iniciaTitulos(){
@@ -318,6 +331,21 @@ public class Frameprincipal extends javax.swing.JFrame {
            jtend[5] = new JTextField(end.getCep());
            tf_emails.add(jtend);
        }
+   }
+   
+   private void carregaLabelPessoa(){
+       //Variáveis dos componentes
+            
+        label_info = new JLabel[4];
+        int index = jList_nomes.getSelectedIndex();
+        label_info[0] = new JLabel(
+            pessoas.get(index).getNomecompleto());
+        label_info[1] = new JLabel(
+            pessoas.get(index).getCpf());
+        label_info[2] = new JLabel(
+            pessoas.get(index).getEstadoCivil());
+        label_info[3] = new JLabel(
+            pessoas.get(index).getProfissao());
    }
    
    private void novoTextfield(){
@@ -371,6 +399,8 @@ public class Frameprincipal extends javax.swing.JFrame {
    private void visualizarTextbox(boolean modoeditar){
        //Limpa os componentes do jpanel
         jPanel_vis.removeAll();
+        jpaneltitulo.removeAll();
+        jpanelft.removeAll();
 
         //Informações
         jtextf_info = new JTextField[5];
@@ -430,25 +460,19 @@ public class Frameprincipal extends javax.swing.JFrame {
         jPanel_vis.add(label_titulo[7]);
         for (JTextField[] jtfen : tf_enderecos) {
             JPanel jpend = new JPanel();
-            JPanel jpend2 = new JPanel();
-            JPanel jpend3 = new JPanel();
-            jpend.setLayout(new BoxLayout(jpend, BoxLayout.LINE_AXIS));
-            jpend2.setLayout(new BoxLayout(jpend2, BoxLayout.PAGE_AXIS));
-            jpend3.setLayout(new BoxLayout(jpend3, BoxLayout.PAGE_AXIS));
-            jpend2.add(new JLabel("Tipo"));
-            jpend2.add(new JLabel("Logradouro"));
-            jpend2.add(new JLabel("Bairro"));
-            jpend2.add(new JLabel("Cidade"));
-            jpend2.add(new JLabel("Estado"));
-            jpend2.add(new JLabel("Cep"));
-            jpend3.add(jtfen[0]);
-            jpend3.add(jtfen[1]);
-            jpend3.add(jtfen[2]);
-            jpend3.add(jtfen[3]);
-            jpend3.add(jtfen[4]);
-            jpend3.add(jtfen[5]);
-            jpend.add(jpend2);
-            jpend.add(jpend3);
+            jpend.setLayout(new BoxLayout(jpend, BoxLayout.PAGE_AXIS));
+            JPanel[] jpend2 = new JPanel[6];
+            String[] endtit = {
+                "Tipo","Logradouro","Bairro","Cidade","Estado","Cep"
+            };
+            for (int i = 0; i < jpend2.length; i++) {
+                jpend2[i] = new JPanel();
+                jpend2[i].setLayout(new BoxLayout(jpend2[i], BoxLayout.LINE_AXIS));
+                jpend2[i].add(new JLabel(endtit[i]));
+                jpend2[i].add(jtfen[i]);
+                jpend.add(jpend2[i]);
+            }
+            
             jPanel_vis.add(jpend);
         }
         jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
@@ -506,6 +530,7 @@ public class Frameprincipal extends javax.swing.JFrame {
 
     List<Pessoa> pessoas;
     JLabel[] label_titulo;
+    JLabel[] label_info;
     JLabel jlabel_foto;
     JPanel jpanelft;
     JPanel jpaneltitulo;

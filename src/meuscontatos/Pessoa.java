@@ -89,6 +89,10 @@ public class Pessoa implements Serializable {
     public void setNome(String nome) {
         this.nome = nome;
     }
+    
+    public String getNomecompleto(){
+        return nome + " " + sobrenome;
+    }
 
     public String getSobrenome() {
         return sobrenome;
