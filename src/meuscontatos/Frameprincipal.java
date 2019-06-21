@@ -193,11 +193,11 @@ public class Frameprincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jtf_pesquisarFocusLost
 
     private void jbt_novoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbt_novoActionPerformed
-        visualizarTextbox(false);
+        visualizarTextfield(false);
     }//GEN-LAST:event_jbt_novoActionPerformed
 
     private void jbt_editarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbt_editarActionPerformed
-        visualizarTextbox(true);
+        visualizarTextfield(true);
     }//GEN-LAST:event_jbt_editarActionPerformed
 
     private void jList_nomesValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList_nomesValueChanged
@@ -388,6 +388,11 @@ public class Frameprincipal extends javax.swing.JFrame {
    
    private void iniciaBotoes(){
        jbsalvar = new JButton("Salvar");
+       jbsalvar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                salvarPessoa(evt);
+            }
+        });
        jbcancelar = new JButton("Cancelar");
    }
    
@@ -396,7 +401,13 @@ public class Frameprincipal extends javax.swing.JFrame {
        jc_estadocivil = new JComboBox(estadoscivis);
    }
    
-   private void visualizarTextbox(boolean modoeditar){
+   private void salvarPessoa(java.awt.event.ActionEvent evt){
+       if(evt.getActionCommand().equals("editar")){
+           
+       }
+   }
+   
+   private void visualizarTextfield(boolean modoeditar){
        //Limpa os componentes do jpanel
         jPanel_vis.removeAll();
         jpaneltitulo.removeAll();
@@ -406,8 +417,10 @@ public class Frameprincipal extends javax.swing.JFrame {
         jtextf_info = new JTextField[5];
         if(modoeditar){
             carregaTextfieldPessoa();
+            jbsalvar.setActionCommand("editar");
         }else{
             novoTextfield();
+            jbsalvar.setActionCommand("novo");
         }
         //carregando a imagem em tamanho 60x60
         jlabel_foto = new JLabel(new ImageIcon(new ImageIcon(getClass()
