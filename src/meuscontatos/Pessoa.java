@@ -134,6 +134,14 @@ public class Pessoa implements Serializable {
     public void setTelefoneList(List<Telefone> telefoneList) {
         this.telefoneList = telefoneList;
     }
+    
+    public void setTelefone(int index, Telefone telefone) {
+        telefoneList.set(index, telefone);
+    }
+
+    public void addTelefone(Telefone telefone) {
+        telefoneList.add(telefone);
+    }
 
     @XmlTransient
     public List<Endereco> getEnderecoList() {
@@ -144,6 +152,14 @@ public class Pessoa implements Serializable {
         this.enderecoList = enderecoList;
     }
 
+    public void setEndereco(int index, Endereco endereco) {
+        enderecoList.set(index, endereco);
+    }
+
+    public void addEndereco( Endereco endereco) {
+        enderecoList.add(endereco);
+    }
+    
     @XmlTransient
     public List<Email> getEmailList() {
         return emailList;
@@ -153,6 +169,14 @@ public class Pessoa implements Serializable {
         this.emailList = emailList;
     }
 
+    public void setEmail(int index, Email email) {
+        emailList.set(index, email);
+    }
+    
+    public void addEmail( Email email) {
+        emailList.add(email);
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;
