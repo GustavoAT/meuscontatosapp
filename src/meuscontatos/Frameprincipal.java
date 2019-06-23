@@ -177,8 +177,7 @@ public class Frameprincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jbt_excluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbt_excluirActionPerformed
-        int resp;
-        resp = JOptionPane.showConfirmDialog(null, "Tem certeza?");
+        excluirPessoa();
     }//GEN-LAST:event_jbt_excluirActionPerformed
 
     private void jtf_pesquisarFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jtf_pesquisarFocusGained
@@ -584,9 +583,28 @@ public class Frameprincipal extends javax.swing.JFrame {
                pe.addEndereco(endereco);
            }
        }
-       entitymanager.persist(pe);
+       if(evt.getActionCommand().equals("novo")){
+           entitymanager.persist(pe);
+       }
        entitymanager.getTransaction().commit();
        preencherJlist();
+   }
+   
+   private void excluirPessoa(){
+       int resp;
+       resp = JOptionPane.showConfirmDialog(null, "Tem certeza?",
+               "Excluir pessoa",
+               JOptionPane.YES_NO_OPTION,
+               JOptionPane.WARNING_MESSAGE);
+       
+       if(resp == JOptionPane.YES_OPTION){
+        Pessoa pe;
+        int index = jList_nomes.getSelectedIndex();
+        pe = pessoas.get(index);
+        entitymanager.remove(pe);
+        entitymanager.getTransaction().commit();
+        preencherJlist();
+       }
    }
    
    private void voltarInicio(){
