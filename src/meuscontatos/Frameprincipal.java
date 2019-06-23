@@ -34,9 +34,10 @@ public class Frameprincipal extends javax.swing.JFrame {
      */
     public Frameprincipal() {
         initComponents();
-        preencherJlist();
+        conectarBanco();
         iniciaTitulos();
         iniciaPaineis();
+        preencherJlist();
         iniciaBotoes();
         iniciaCombobox();
     }
@@ -201,60 +202,12 @@ public class Frameprincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jbt_editarActionPerformed
 
     private void jList_nomesValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList_nomesValueChanged
-        //Limpa os componentes do jpanel
-        jPanel_vis.removeAll();
-
-        if(!pessoas.isEmpty()){
-            carregaLabelPessoa();
-            //carregando a imagem em tamanho 60x60
-            jlabel_foto = new JLabel(new ImageIcon(new ImageIcon(getClass()
-                    .getResource("media/user1.png")).getImage()
-                    .getScaledInstance(60, 60, java.awt.Image.SCALE_SMOOTH)));
-
-            jpaneltitulo.add(label_titulo[0]);
-            jpaneltitulo.add(label_info[0]);
-            jpanelft.add(jpaneltitulo);
-            jpanelft.add(Box.createHorizontalGlue());
-            jpanelft.add(jlabel_foto);
-            jPanel_vis.add(jpanelft);
-            jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
-            for (int i = 2; i < 4; i++) {
-               jPanel_vis.add(label_titulo[i]);
-               jPanel_vis.add(label_info[i]);
-               jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
-            }
-            int index = jList_nomes.getSelectedIndex();
-            jPanel_vis.add(label_titulo[4]);
-            for(Telefone te : pessoas.get(index).getTelefoneList()){
-                JPanel jptel = new JPanel();
-                jptel.setLayout(new BoxLayout(jptel, BoxLayout.LINE_AXIS));
-                jptel.add(new JLabel(te.getTipo()+":"));
-                jptel.add(new JLabel(te.getTelefone()));
-                jPanel_vis.add(jptel);
-            }
-            jPanel_vis.add(label_titulo[5]);
-            for(Email ema : pessoas.get(index).getEmailList()){
-                JPanel jpmail = new JPanel();
-                jpmail.setLayout(new BoxLayout(jpmail, BoxLayout.LINE_AXIS));
-                jpmail.add(new JLabel(ema.getTipo()+":"));
-                jpmail.add(new JLabel(ema.getEmail()));
-                jPanel_vis.add(jpmail);
-            }
-            jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
-            for(Endereco end : pessoas.get(index).getEnderecoList()){
-                JPanel jpend = new JPanel();
-                jpend.setLayout(new BoxLayout(jpend, BoxLayout.LINE_AXIS));
-                jpend.add(new JLabel(end.getTipo()+":"));
-                jpend.add(new JLabel(end.getEndeCompleto()));
-                jPanel_vis.add(jpend);
-            }
-             jPanel_vis.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
-            jscrolp_vis.validate();
-        }
+        atualizaVisualizacao();
     }//GEN-LAST:event_jList_nomesValueChanged
 
    private void preencherJlist(){
-       pessoas = listarPessoas();
+       pessoas = entitymanager.createNamedQuery("Pessoa.findAll",Pessoa.class)
+               .getResultList();
        String[] nomes;
        if(!pessoas.isEmpty()){
             nomes = new String[pessoas.size()];
@@ -263,7 +216,7 @@ public class Frameprincipal extends javax.swing.JFrame {
                      nomes[i] = "<html>"+
                              pessoas.get(i).getNome()+
                              "<br>->"+
-                             pessoas.get(i).getTelefoneList().get(0)+
+                             pessoas.get(i).getTelefoneList().get(0).getTelefone()+
                              "</html>";
                 }else{
                     nomes[i] = "<html>"+
@@ -300,12 +253,29 @@ public class Frameprincipal extends javax.swing.JFrame {
         }
    }
    
+   private void iniciaPaineis(){
+       jPanel_vis.setLayout(new BoxLayout(jPanel_vis, BoxLayout.PAGE_AXIS));
+       jpanelft = new JPanel();
+       jpaneltitulo = new JPanel();
+       jpanelbotoes = new JPanel();
+       //Jpanel com layout box, que permite adicionar na vertical ou na horizontal
+       jpanelft.setLayout(new BoxLayout(jpanelft, BoxLayout.LINE_AXIS));
+       jpaneltitulo.setLayout(new BoxLayout(jpaneltitulo, BoxLayout.PAGE_AXIS));
+       jpanelbotoes.setLayout(new BoxLayout(jpanelbotoes, BoxLayout.LINE_AXIS));
+   }
+   
+   private void iniciaCombobox(){
+       String[] estadoscivis = {"Solteiro", "Casado", "Separado", "Divorciado"};
+       jc_estadocivil = new JComboBox(estadoscivis);
+   }
+   
    private void carregaTextfieldPessoa(){
        int sel = jList_nomes.getSelectedIndex();
        jtextf_info[0] = new JTextField(pessoas.get(sel).getNome());
        jtextf_info[1] = new JTextField(pessoas.get(sel).getSobrenome());
        jtextf_info[2] = new JTextField(pessoas.get(sel).getCpf());
        jtextf_info[3] = new JTextField(pessoas.get(sel).getProfissao());
+       jc_estadocivil.setSelectedItem(pessoas.get(sel).getEstadoCivil());
        tf_telefones = new ArrayList();
        tf_emails = new ArrayList();
        tf_enderecos = new ArrayList();
@@ -334,8 +304,7 @@ public class Frameprincipal extends javax.swing.JFrame {
    }
    
    private void carregaLabelPessoa(){
-       //Variáveis dos componentes
-            
+       //Variáveis dos componentes  
         label_info = new JLabel[4];
         int index = jList_nomes.getSelectedIndex();
         label_info[0] = new JLabel(
@@ -375,49 +344,23 @@ public class Frameprincipal extends javax.swing.JFrame {
         tf_enderecos.add(jtend);
    }
    
-   private void iniciaPaineis(){
-       jPanel_vis.setLayout(new BoxLayout(jPanel_vis, BoxLayout.PAGE_AXIS));
-       jpanelft = new JPanel();
-       jpaneltitulo = new JPanel();
-       jpanelbotoes = new JPanel();
-       //Jpanel com layout box, que permite adicionar na vertical ou na horizontal
-       jpanelft.setLayout(new BoxLayout(jpanelft, BoxLayout.LINE_AXIS));
-       jpaneltitulo.setLayout(new BoxLayout(jpaneltitulo, BoxLayout.PAGE_AXIS));
-       jpanelbotoes.setLayout(new BoxLayout(jpanelbotoes, BoxLayout.LINE_AXIS));
-   }
-   
-   private void iniciaBotoes(){
-       jbsalvar = new JButton("Salvar");
-       jbsalvar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                salvarPessoa(evt);
-            }
-        });
-       jbcancelar = new JButton("Cancelar");
-   }
-   
-   private void iniciaCombobox(){
-       String[] estadoscivis = {"Solteiro", "Casado", "Separado", "Divorciado"};
-       jc_estadocivil = new JComboBox(estadoscivis);
-   }
-   
-   private void salvarPessoa(java.awt.event.ActionEvent evt){
-       if(evt.getActionCommand().equals("editar")){
-           
-       }
-   }
-   
    private void visualizarTextfield(boolean modoeditar){
        //Limpa os componentes do jpanel
         jPanel_vis.removeAll();
         jpaneltitulo.removeAll();
         jpanelft.removeAll();
-
+        
+        jbt_editar.setEnabled(false);
+        jbt_novo.setEnabled(false);
+        jbt_excluir.setEnabled(false);
+        jList_nomes.setEnabled(false);
+        
         //Informações
         jtextf_info = new JTextField[5];
         if(modoeditar){
             carregaTextfieldPessoa();
             jbsalvar.setActionCommand("editar");
+            
         }else{
             novoTextfield();
             jbsalvar.setActionCommand("novo");
@@ -495,18 +438,178 @@ public class Frameprincipal extends javax.swing.JFrame {
         
         jscrolp_vis.validate();
    }
-    
-   private List<Pessoa> listarPessoas(){
-       EntityManagerFactory factory = Persistence.
+   
+   private void atualizaVisualizacao(){
+       //Limpa os componentes do jpanel
+        jPanel_vis.removeAll();
+        jpaneltitulo.removeAll();
+        jpanelft.removeAll();
+
+        if(!pessoas.isEmpty()){
+            carregaLabelPessoa();
+            //carregando a imagem em tamanho 60x60
+            jlabel_foto = new JLabel(new ImageIcon(new ImageIcon(getClass()
+                    .getResource("media/user1.png")).getImage()
+                    .getScaledInstance(60, 60, java.awt.Image.SCALE_SMOOTH)));
+
+            jpaneltitulo.add(label_titulo[0]);
+            jpaneltitulo.add(label_info[0]);
+            jpanelft.add(jpaneltitulo);
+            jpanelft.add(Box.createHorizontalGlue());
+            jpanelft.add(jlabel_foto);
+            jPanel_vis.add(jpanelft);
+            jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
+            for (int i = 1; i < 4; i++) {
+               jPanel_vis.add(label_titulo[i+1]);
+               jPanel_vis.add(label_info[i]);
+               jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
+            }
+            int index = jList_nomes.getSelectedIndex();
+            jPanel_vis.add(label_titulo[4]);
+            for(Telefone te : pessoas.get(index).getTelefoneList()){
+                JPanel jptel = new JPanel();
+                jptel.setLayout(new BoxLayout(jptel, BoxLayout.LINE_AXIS));
+                jptel.add(new JLabel(te.getTipo()+": "));
+                jptel.add(new JLabel(te.getTelefone()));
+                jptel.add(Box.createHorizontalGlue());
+                jPanel_vis.add(jptel);
+            }
+            jPanel_vis.add(label_titulo[5]);
+            for(Email ema : pessoas.get(index).getEmailList()){
+                JPanel jpmail = new JPanel();
+                jpmail.setLayout(new BoxLayout(jpmail, BoxLayout.LINE_AXIS));
+                jpmail.add(new JLabel(ema.getTipo()+": "));
+                jpmail.add(new JLabel(ema.getEmail()));
+                jpmail.add(Box.createHorizontalGlue());
+                jPanel_vis.add(jpmail);
+            }
+            jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
+            jPanel_vis.add(label_titulo[6]);
+            for(Endereco end : pessoas.get(index).getEnderecoList()){
+                JPanel jpend = new JPanel();
+                jpend.setLayout(new BoxLayout(jpend, BoxLayout.LINE_AXIS));
+                jpend.add(new JLabel(end.getTipo()+": "));
+                jpend.add(new JLabel(end.getEndeCompleto()));
+                jPanel_vis.add(jpend);
+            }
+             jPanel_vis.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
+            jscrolp_vis.validate();
+        }
+   }
+   
+   private void iniciaBotoes(){
+       jbsalvar = new JButton("Salvar");
+       jbsalvar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                salvarPessoa(evt);
+            }
+        });
+       jbcancelar = new JButton("Cancelar");
+       jbcancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                voltarInicio();
+            }
+        });
+   }
+   
+   private void salvarPessoa(java.awt.event.ActionEvent evt){
+       Pessoa pe;
+       if(evt.getActionCommand().equals("editar")){
+           int index = jList_nomes.getSelectedIndex();
+           pe = pessoas.get(index);
+       }else{
+           pe = new Pessoa();
+           pe.setTelefoneList(new ArrayList<>());
+           pe.setEmailList(new ArrayList<>());
+           pe.setEnderecoList(new ArrayList<>());
+       }
+       pe.setNome(jtextf_info[0].getText());
+       pe.setSobrenome(jtextf_info[1].getText());
+       pe.setCpf(jtextf_info[2].getText());
+       pe.setEstadoCivil(jc_estadocivil.getSelectedItem().toString());
+       pe.setProfissao(jtextf_info[3].getText());
+       List<Telefone> tel_list = pe.getTelefoneList();
+       for (int i = 0; i < tf_telefones.size(); i++) {
+           Telefone telefone;
+           if(i < tel_list.size()){
+               telefone = tel_list.get(i);
+               telefone.setTipo(tf_telefones.get(i)[0].getText());
+               telefone.setTelefone(tf_telefones.get(i)[1].getText());
+               pe.setTelefone(i, telefone);
+           }else{
+               telefone = new Telefone();
+               telefone.setTipo(tf_telefones.get(i)[0].getText());
+               telefone.setTelefone(tf_telefones.get(i)[1].getText());
+               telefone.setIdPessoa(pe);
+               pe.addTelefone(telefone);
+           }
+       }
+       List<Email> em_list = pe.getEmailList();
+       for (int i = 0; i < tf_emails.size(); i++) {
+           Email email;
+           if(i < em_list.size()){
+               email = em_list.get(i);
+               email.setTipo(tf_emails.get(i)[0].getText());
+               email.setEmail(tf_emails.get(i)[1].getText());
+               pe.setEmail(i, email);
+           }else{
+               email = new Email();
+               email.setTipo(tf_emails.get(i)[0].getText());
+               email.setEmail(tf_emails.get(i)[1].getText());
+               email.setIdPessoa(pe);
+               pe.addEmail(email);
+           }
+       }
+       List<Endereco> ende_list = pe.getEnderecoList();
+       for (int i = 0; i < tf_enderecos.size(); i++) {
+           Endereco endereco;
+           if(i < ende_list.size()){
+               endereco = ende_list.get(i);
+               endereco.setTipo(tf_enderecos.get(i)[0].getText());
+               endereco.setLogradouro(tf_enderecos.get(i)[1].getText());
+               endereco.setBairro(tf_enderecos.get(i)[2].getText());
+               endereco.setCidade(tf_enderecos.get(i)[3].getText());
+               endereco.setEstado(tf_enderecos.get(i)[4].getText());
+               endereco.setCep(tf_enderecos.get(i)[5].getText());
+               pe.setEndereco(i, endereco);
+           }else{
+               endereco = new Endereco();
+               endereco.setTipo(tf_enderecos.get(i)[0].getText());
+               endereco.setLogradouro(tf_enderecos.get(i)[1].getText());
+               endereco.setBairro(tf_enderecos.get(i)[2].getText());
+               endereco.setCidade(tf_enderecos.get(i)[3].getText());
+               endereco.setEstado(tf_enderecos.get(i)[4].getText());
+               endereco.setCep(tf_enderecos.get(i)[5].getText());
+               endereco.setIdPessoa(pe);
+               pe.addEndereco(endereco);
+           }
+       }
+       entitymanager.persist(pe);
+       entitymanager.getTransaction().commit();
+       preencherJlist();
+   }
+   
+   private void voltarInicio(){
+       jbt_editar.setEnabled(true);
+       jbt_novo.setEnabled(true);
+       jbt_excluir.setEnabled(true);
+       jList_nomes.setEnabled(true);
+       atualizaVisualizacao();
+   }
+   
+   private void conectarBanco(){
+       factory = Persistence.
                createEntityManagerFactory("MeusContatosAppPU");
-       EntityManager entitymanager = factory.createEntityManager();
-       List<Pessoa> pe;
-       pe = entitymanager.createNamedQuery("Pessoa.findAll",Pessoa.class)
-               .getResultList();
+       entitymanager = factory.createEntityManager();
+       entitymanager.getTransaction().begin();
+   }
+   
+   private void desconectarBanco(Pessoa pessoa){
        entitymanager.close();
        factory.close();
-       return pe;
    }
+   
+   
     /**
      * @param args the command line arguments
      */
@@ -541,6 +644,8 @@ public class Frameprincipal extends javax.swing.JFrame {
         });
     }
 
+    EntityManagerFactory factory;
+    EntityManager entitymanager;
     List<Pessoa> pessoas;
     JLabel[] label_titulo;
     JLabel[] label_info;
