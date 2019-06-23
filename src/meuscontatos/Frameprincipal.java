@@ -298,7 +298,7 @@ public class Frameprincipal extends javax.swing.JFrame {
            jtend[3] = new JTextField(end.getCidade());
            jtend[4] = new JTextField(end.getEstado());
            jtend[5] = new JTextField(end.getCep());
-           tf_emails.add(jtend);
+           tf_enderecos.add(jtend);
        }
    }
    
@@ -306,6 +306,10 @@ public class Frameprincipal extends javax.swing.JFrame {
        //Variáveis dos componentes  
         label_info = new JLabel[4];
         int index = jList_nomes.getSelectedIndex();
+        if(index < 1){
+            index = 0;
+            jList_nomes.setSelectedIndex(index);
+        }
         label_info[0] = new JLabel(
             pessoas.get(index).getNomecompleto());
         label_info[1] = new JLabel(
@@ -392,7 +396,7 @@ public class Frameprincipal extends javax.swing.JFrame {
         jPanel_vis.add(jc_estadocivil);
         jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
         jPanel_vis.add(label_titulo[4]);
-        jPanel_vis.add(jtextf_info[4]);
+        jPanel_vis.add(jtextf_info[3]);
         jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
         jPanel_vis.add(label_titulo[5]);
         for (JTextField[] jtftel : tf_telefones) {
@@ -464,7 +468,7 @@ public class Frameprincipal extends javax.swing.JFrame {
                jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
             }
             int index = jList_nomes.getSelectedIndex();
-            jPanel_vis.add(label_titulo[4]);
+            jPanel_vis.add(label_titulo[5]);
             for(Telefone te : pessoas.get(index).getTelefoneList()){
                 JPanel jptel = new JPanel();
                 jptel.setLayout(new BoxLayout(jptel, BoxLayout.LINE_AXIS));
@@ -473,7 +477,7 @@ public class Frameprincipal extends javax.swing.JFrame {
                 jptel.add(Box.createHorizontalGlue());
                 jPanel_vis.add(jptel);
             }
-            jPanel_vis.add(label_titulo[5]);
+            jPanel_vis.add(label_titulo[6]);
             for(Email ema : pessoas.get(index).getEmailList()){
                 JPanel jpmail = new JPanel();
                 jpmail.setLayout(new BoxLayout(jpmail, BoxLayout.LINE_AXIS));
@@ -483,7 +487,7 @@ public class Frameprincipal extends javax.swing.JFrame {
                 jPanel_vis.add(jpmail);
             }
             jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
-            jPanel_vis.add(label_titulo[6]);
+            jPanel_vis.add(label_titulo[7]);
             for(Endereco end : pessoas.get(index).getEnderecoList()){
                 JPanel jpend = new JPanel();
                 jpend.setLayout(new BoxLayout(jpend, BoxLayout.LINE_AXIS));
@@ -512,6 +516,7 @@ public class Frameprincipal extends javax.swing.JFrame {
    }
    
    private void salvarPessoa(java.awt.event.ActionEvent evt){
+       entitymanager.getTransaction().begin();
        Pessoa pe;
        if(evt.getActionCommand().equals("editar")){
            int index = jList_nomes.getSelectedIndex();
@@ -587,6 +592,7 @@ public class Frameprincipal extends javax.swing.JFrame {
            entitymanager.persist(pe);
        }
        entitymanager.getTransaction().commit();
+       voltarInicio();
        preencherJlist();
    }
    
@@ -601,6 +607,7 @@ public class Frameprincipal extends javax.swing.JFrame {
         Pessoa pe;
         int index = jList_nomes.getSelectedIndex();
         pe = pessoas.get(index);
+        entitymanager.getTransaction().begin();
         entitymanager.remove(pe);
         entitymanager.getTransaction().commit();
         preencherJlist();
@@ -619,7 +626,6 @@ public class Frameprincipal extends javax.swing.JFrame {
        factory = Persistence.
                createEntityManagerFactory("MeusContatosAppPU");
        entitymanager = factory.createEntityManager();
-       entitymanager.getTransaction().begin();
    }
    
    private void desconectarBanco(Pessoa pessoa){
