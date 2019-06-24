@@ -261,6 +261,8 @@ public class Frameprincipal extends javax.swing.JFrame {
        jpanelft.setLayout(new BoxLayout(jpanelft, BoxLayout.LINE_AXIS));
        jpaneltitulo.setLayout(new BoxLayout(jpaneltitulo, BoxLayout.PAGE_AXIS));
        jpanelbotoes.setLayout(new BoxLayout(jpanelbotoes, BoxLayout.LINE_AXIS));
+       jptel = new JPanel();
+       jptel.setLayout(new BoxLayout(jptel, BoxLayout.PAGE_AXIS));
    }
    
    private void iniciaCombobox(){
@@ -276,6 +278,7 @@ public class Frameprincipal extends javax.swing.JFrame {
        jtextf_info[3] = new JTextField(pessoas.get(sel).getProfissao());
        jc_estadocivil.setSelectedItem(pessoas.get(sel).getEstadoCivil());
        tf_telefones = new ArrayList();
+       bt_tel = new ArrayList();
        tf_emails = new ArrayList();
        tf_enderecos = new ArrayList();
        for(Telefone tel : pessoas.get(sel).getTelefoneList()){
@@ -327,6 +330,7 @@ public class Frameprincipal extends javax.swing.JFrame {
         jtextf_info[3] = new JTextField();
         jtextf_info[4] = new JTextField();
         tf_telefones = new ArrayList();
+        bt_tel = new ArrayList();
         JTextField[] jttel = new JTextField[2];
         jttel[0] = new JTextField();
         jttel[1] = new JTextField();
@@ -400,10 +404,21 @@ public class Frameprincipal extends javax.swing.JFrame {
         jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
         jPanel_vis.add(label_titulo[5]);
         for (JTextField[] jtftel : tf_telefones) {
-            JPanel jptel = new JPanel();
-            jptel.setLayout(new BoxLayout(jptel, BoxLayout.LINE_AXIS));
-            jptel.add(jtftel[0]);
-            jptel.add(jtftel[1]);
+            JPanel jptel2 = new JPanel();
+            jptel2.setLayout(new BoxLayout(jptel2, BoxLayout.LINE_AXIS));
+            jptel2.add(jtftel[0]);
+            jptel2.add(jtftel[1]);
+            JButton jbmenos = new JButton("-");
+            if(tf_telefones.indexOf(jtftel) == 0){
+                JButton jbmais = new JButton("+");
+                jptel2.add(jbmais);
+                botaoMaisTel(jbmais);
+            }else{
+                bt_tel.add(jbmenos);
+                jptel2.add(jbmenos);
+                botaoMenosTel(jbmenos);    
+            }
+            jptel.add(jptel2);
             jPanel_vis.add(jptel);
         }
         jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
@@ -513,6 +528,47 @@ public class Frameprincipal extends javax.swing.JFrame {
                 voltarInicio();
             }
         });
+   }
+   
+   private void botaoMaisTel(JButton bt){
+       bt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                maisTel();
+            }
+        });
+   }
+   
+   private void maisTel(){
+       JTextField[] jttel = new JTextField[2];
+       jttel[0] = new JTextField();
+       jttel[1] = new JTextField();
+       tf_telefones.add(jttel);
+       JPanel jptel2 = new JPanel();
+       jptel2.setLayout(new BoxLayout(jptel2, BoxLayout.LINE_AXIS));
+       jptel2.add(jttel[0]);
+       jptel2.add(jttel[1]);
+       JButton jbmenos = new JButton("-");
+       bt_tel.add(jbmenos);
+       jptel2.add(jbmenos);
+       botaoMenosTel(jbmenos);
+       jptel.add(jptel2);
+       jPanel_vis.validate();
+   }
+   
+   private void botaoMenosTel(JButton bt){
+       bt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menosTel(evt);
+            }
+        });
+   }
+   
+   private void menosTel(java.awt.event.ActionEvent evt){
+       int index = bt_tel.indexOf((JButton)evt.getSource());
+       tf_telefones.remove(index+1);
+       bt_tel.remove(index);
+       jptel.remove(index+1);
+       jPanel_vis.validate();
    }
    
    private void salvarPessoa(java.awt.event.ActionEvent evt){
@@ -628,7 +684,7 @@ public class Frameprincipal extends javax.swing.JFrame {
        entitymanager = factory.createEntityManager();
    }
    
-   private void desconectarBanco(Pessoa pessoa){
+   private void desconectarBanco(){
        entitymanager.close();
        factory.close();
    }
@@ -677,11 +733,13 @@ public class Frameprincipal extends javax.swing.JFrame {
     JPanel jpanelft;
     JPanel jpaneltitulo;
     JPanel jpanelbotoes;
+    JPanel jptel;
     JButton jbsalvar ;
     JButton jbcancelar;
     JTextField[] jtextf_info;
     JComboBox jc_estadocivil;
     List<JTextField[]> tf_telefones;
+    List<JButton> bt_tel;
     List<JTextField[]> tf_emails;
     List<JTextField[]> tf_enderecos;
     // Variables declaration - do not modify//GEN-BEGIN:variables
