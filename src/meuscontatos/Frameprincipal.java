@@ -65,7 +65,6 @@ public class Frameprincipal extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("MeusContatos");
         setMinimumSize(new java.awt.Dimension(549, 370));
-        setPreferredSize(new java.awt.Dimension(549, 370));
 
         jscrolp_vis.setPreferredSize(new java.awt.Dimension(416, 318));
 
@@ -268,6 +267,7 @@ public class Frameprincipal extends javax.swing.JFrame {
        jptel.setLayout(new BoxLayout(jptel, BoxLayout.PAGE_AXIS));
        jpemail = new JPanel();
        jpemail.setLayout(new BoxLayout(jpemail, BoxLayout.PAGE_AXIS));
+       jscrolp_vis.getVerticalScrollBar().setUnitIncrement(10);
    }
    
    private void iniciaCombobox(){
