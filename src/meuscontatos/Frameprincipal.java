@@ -263,6 +263,8 @@ public class Frameprincipal extends javax.swing.JFrame {
        jpanelbotoes.setLayout(new BoxLayout(jpanelbotoes, BoxLayout.LINE_AXIS));
        jptel = new JPanel();
        jptel.setLayout(new BoxLayout(jptel, BoxLayout.PAGE_AXIS));
+       jpemail = new JPanel();
+       jpemail.setLayout(new BoxLayout(jpemail, BoxLayout.PAGE_AXIS));
    }
    
    private void iniciaCombobox(){
@@ -280,6 +282,7 @@ public class Frameprincipal extends javax.swing.JFrame {
        tf_telefones = new ArrayList();
        bt_tel = new ArrayList();
        tf_emails = new ArrayList();
+       bt_email = new ArrayList();
        tf_enderecos = new ArrayList();
        for(Telefone tel : pessoas.get(sel).getTelefoneList()){
            JTextField[] jttel = new JTextField[2];
@@ -336,6 +339,7 @@ public class Frameprincipal extends javax.swing.JFrame {
         jttel[1] = new JTextField();
         tf_telefones.add(jttel);
         tf_emails = new ArrayList();
+        bt_email = new ArrayList();
         JTextField[] jtemail = new JTextField[2];
         jtemail[0] = new JTextField();
         jtemail[1] = new JTextField();
@@ -424,10 +428,21 @@ public class Frameprincipal extends javax.swing.JFrame {
         jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
         jPanel_vis.add(label_titulo[6]);
         for (JTextField[] jtfemail : tf_emails) {
-            JPanel jpemail = new JPanel();
-            jpemail.setLayout(new BoxLayout(jpemail, BoxLayout.LINE_AXIS));
-            jpemail.add(jtfemail[0]);
-            jpemail.add(jtfemail[1]);
+            JPanel jpemail2 = new JPanel();
+            jpemail2.setLayout(new BoxLayout(jpemail2, BoxLayout.LINE_AXIS));
+            jpemail2.add(jtfemail[0]);
+            jpemail2.add(jtfemail[1]);
+            JButton jbmenos = new JButton("-");
+            if(tf_emails.indexOf(jtfemail) == 0){
+                JButton jbmais = new JButton("+");
+                jpemail2.add(jbmais);
+                botaoMaisEmail(jbmais);
+            }else{
+                bt_email.add(jbmenos);
+                jpemail2.add(jbmenos);
+                botaoMenosEmail(jbmenos);    
+            }
+            jpemail.add(jpemail2);
             jPanel_vis.add(jpemail);
         }
         jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
@@ -571,6 +586,46 @@ public class Frameprincipal extends javax.swing.JFrame {
        jPanel_vis.validate();
    }
    
+   private void botaoMaisEmail(JButton bt){
+       bt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                maisEmail();
+            }
+        });
+   }
+   
+   private void maisEmail(){
+       JTextField[] jtmail = new JTextField[2];
+       jtmail[0] = new JTextField();
+       jtmail[1] = new JTextField();
+       tf_emails.add(jtmail);
+       JPanel jpemail2 = new JPanel();
+       jpemail2.setLayout(new BoxLayout(jpemail2, BoxLayout.LINE_AXIS));
+       jpemail2.add(jtmail[0]);
+       jpemail2.add(jtmail[1]);
+       JButton jbmenos = new JButton("-");
+       bt_email.add(jbmenos);
+       jpemail2.add(jbmenos);
+       botaoMenosEmail(jbmenos);
+       jpemail.add(jpemail2);
+       jPanel_vis.validate();
+   }
+   
+   private void botaoMenosEmail(JButton bt){
+       bt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menosEmail(evt);
+            }
+        });
+   }
+   
+   private void menosEmail(java.awt.event.ActionEvent evt){
+       int index = bt_email.indexOf((JButton)evt.getSource());
+       tf_emails.remove(index+1);
+       bt_email.remove(index);
+       jpemail.remove(index+1);
+       jPanel_vis.validate();
+   }   
    private void salvarPessoa(java.awt.event.ActionEvent evt){
        entitymanager.getTransaction().begin();
        Pessoa pe;
@@ -734,12 +789,14 @@ public class Frameprincipal extends javax.swing.JFrame {
     JPanel jpaneltitulo;
     JPanel jpanelbotoes;
     JPanel jptel;
+    JPanel jpemail;
     JButton jbsalvar ;
     JButton jbcancelar;
     JTextField[] jtextf_info;
     JComboBox jc_estadocivil;
     List<JTextField[]> tf_telefones;
     List<JButton> bt_tel;
+    List<JButton> bt_email;
     List<JTextField[]> tf_emails;
     List<JTextField[]> tf_enderecos;
     // Variables declaration - do not modify//GEN-BEGIN:variables
