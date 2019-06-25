@@ -64,6 +64,7 @@ public class Frameprincipal extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("MeusContatos");
+        setMinimumSize(new java.awt.Dimension(549, 370));
         setPreferredSize(new java.awt.Dimension(549, 370));
 
         jscrolp_vis.setPreferredSize(new java.awt.Dimension(416, 318));
@@ -72,11 +73,11 @@ public class Frameprincipal extends javax.swing.JFrame {
         jPanel_vis.setLayout(jPanel_visLayout);
         jPanel_visLayout.setHorizontalGroup(
             jPanel_visLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 416, Short.MAX_VALUE)
+            .addGap(0, 427, Short.MAX_VALUE)
         );
         jPanel_visLayout.setVerticalGroup(
             jPanel_visLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 316, Short.MAX_VALUE)
+            .addGap(0, 326, Short.MAX_VALUE)
         );
 
         jscrolp_vis.setViewportView(jPanel_vis);
@@ -139,7 +140,7 @@ public class Frameprincipal extends javax.swing.JFrame {
                 .addComponent(jbt_editar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jbt_excluir)
-                .addContainerGap(173, Short.MAX_VALUE))
+                .addContainerGap(205, Short.MAX_VALUE))
         );
         jPanel_menuLayout.setVerticalGroup(
             jPanel_menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -161,7 +162,7 @@ public class Frameprincipal extends javax.swing.JFrame {
                 .addGap(6, 6, 6)
                 .addComponent(jscrollp_nomes, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jscrolp_vis, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addComponent(jscrolp_vis, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(jPanel_menu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -170,8 +171,9 @@ public class Frameprincipal extends javax.swing.JFrame {
                 .addComponent(jPanel_menu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jscrolp_vis, javax.swing.GroupLayout.DEFAULT_SIZE, 328, Short.MAX_VALUE)
-                    .addComponent(jscrollp_nomes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jscrollp_nomes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jscrolp_vis, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -536,8 +538,19 @@ public class Frameprincipal extends javax.swing.JFrame {
             for(Endereco end : pessoas.get(index).getEnderecoList()){
                 JPanel jpend = new JPanel();
                 jpend.setLayout(new BoxLayout(jpend, BoxLayout.LINE_AXIS));
-                jpend.add(new JLabel(end.getTipo()+": "));
-                jpend.add(new JLabel(end.getEndeCompleto()));
+                jpend.add(new JLabel(end.getTipo()+":"));
+                jpend.add(Box.createRigidArea(new Dimension(10,0)));
+                jpend.add(new JLabel("<html>"+
+                        end.getLogradouro()+
+                        ". Bairro "+
+                        end.getBairro()+
+                        ".<br>"+
+                        end.getCidade()+
+                        " - "+
+                        end.getEstado()+
+                        ". <br>Cep "+
+                        end.getCep()+
+                        "</html>"));
                 jPanel_vis.add(jpend);
             }
              jPanel_vis.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
@@ -641,6 +654,7 @@ public class Frameprincipal extends javax.swing.JFrame {
        jpemail.remove(index+2);
        jPanel_vis.validate();
    }   
+   
    private void salvarPessoa(java.awt.event.ActionEvent evt){
        entitymanager.getTransaction().begin();
        Pessoa pe;
