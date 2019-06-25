@@ -5,6 +5,7 @@
  */
 package meuscontatos;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
@@ -407,6 +408,13 @@ public class Frameprincipal extends javax.swing.JFrame {
         jPanel_vis.add(jtextf_info[3]);
         jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
         jPanel_vis.add(label_titulo[5]);
+        JPanel jptel3 = new JPanel();
+        jptel3.setLayout(new BoxLayout(jptel3, BoxLayout.LINE_AXIS));
+        jptel3.setAlignmentX((float) 0.3);
+        jptel3.add(new JLabel("Tipo"));
+        jptel3.add(Box.createRigidArea(new Dimension(120,0)));
+        jptel3.add(new JLabel("Número"));
+        jptel.add(jptel3);
         for (JTextField[] jtftel : tf_telefones) {
             JPanel jptel2 = new JPanel();
             jptel2.setLayout(new BoxLayout(jptel2, BoxLayout.LINE_AXIS));
@@ -427,6 +435,13 @@ public class Frameprincipal extends javax.swing.JFrame {
         }
         jPanel_vis.add(Box.createRigidArea(new Dimension(0,10)));
         jPanel_vis.add(label_titulo[6]);
+        JPanel jpmail3 = new JPanel();
+        jpmail3.setLayout(new BoxLayout(jpmail3, BoxLayout.LINE_AXIS));
+        jpmail3.setAlignmentX((float) 0.3);
+        jpmail3.add(new JLabel("Tipo"));
+        jpmail3.add(Box.createRigidArea(new Dimension(120,0)));
+        jpmail3.add(new JLabel("e-mail"));
+        jpemail.add(jpmail3);
         for (JTextField[] jtfemail : tf_emails) {
             JPanel jpemail2 = new JPanel();
             jpemail2.setLayout(new BoxLayout(jpemail2, BoxLayout.LINE_AXIS));
@@ -582,7 +597,7 @@ public class Frameprincipal extends javax.swing.JFrame {
        int index = bt_tel.indexOf((JButton)evt.getSource());
        tf_telefones.remove(index+1);
        bt_tel.remove(index);
-       jptel.remove(index+1);
+       jptel.remove(index+2);
        jPanel_vis.validate();
    }
    
@@ -623,7 +638,7 @@ public class Frameprincipal extends javax.swing.JFrame {
        int index = bt_email.indexOf((JButton)evt.getSource());
        tf_emails.remove(index+1);
        bt_email.remove(index);
-       jpemail.remove(index+1);
+       jpemail.remove(index+2);
        jPanel_vis.validate();
    }   
    private void salvarPessoa(java.awt.event.ActionEvent evt){
