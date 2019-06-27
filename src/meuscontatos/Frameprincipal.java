@@ -8,6 +8,7 @@ package meuscontatos;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -38,7 +39,7 @@ public class Frameprincipal extends javax.swing.JFrame {
         conectarBanco();
         iniciaTitulos();
         iniciaPaineis();
-        preencherJlist();
+        preencherJlist("");
         iniciaBotoes();
         iniciaCombobox();
     }
@@ -102,6 +103,11 @@ public class Frameprincipal extends javax.swing.JFrame {
             }
             public void focusLost(java.awt.event.FocusEvent evt) {
                 jtf_pesquisarFocusLost(evt);
+            }
+        });
+        jtf_pesquisar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jtf_pesquisarKeyTyped(evt);
             }
         });
 
@@ -183,7 +189,7 @@ public class Frameprincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jbt_excluirActionPerformed
 
     private void jtf_pesquisarFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jtf_pesquisarFocusGained
-        jtf_pesquisar.selectAll();
+        jtf_pesquisar.setText("");
         jtf_pesquisar.setForeground(new java.awt.Color(0, 0, 0));
     }//GEN-LAST:event_jtf_pesquisarFocusGained
 
@@ -206,9 +212,22 @@ public class Frameprincipal extends javax.swing.JFrame {
         atualizaVisualizacao();
     }//GEN-LAST:event_jList_nomesValueChanged
 
-   private void preencherJlist(){
+    private void jtf_pesquisarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtf_pesquisarKeyTyped
+        preencherJlist(jtf_pesquisar.getText());
+    }//GEN-LAST:event_jtf_pesquisarKeyTyped
+
+   private void preencherJlist(String nome){
        pessoas = entitymanager.createNamedQuery("Pessoa.findAll",Pessoa.class)
                .getResultList();
+       if(!nome.equals("")){    
+           for (int i = 0; i < pessoas.size(); i++) {
+               if(!pessoas.get(i).getNomecompleto().contains(nome)){
+                   if (!pessoas.get(i).getTelefoneList().get(0).getTelefone().contains(nome)) {
+                       pessoas.remove(i);
+                   }
+               }
+           }
+       }
        String[] nomes;
        if(!pessoas.isEmpty()){
             nomes = new String[pessoas.size()];
@@ -733,7 +752,7 @@ public class Frameprincipal extends javax.swing.JFrame {
        }
        entitymanager.getTransaction().commit();
        voltarInicio();
-       preencherJlist();
+       preencherJlist("");
    }
    
    private void excluirPessoa(){
@@ -750,7 +769,7 @@ public class Frameprincipal extends javax.swing.JFrame {
         entitymanager.getTransaction().begin();
         entitymanager.remove(pe);
         entitymanager.getTransaction().commit();
-        preencherJlist();
+        preencherJlist("");
        }
    }
    
