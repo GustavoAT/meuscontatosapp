@@ -5,10 +5,8 @@
  */
 package meuscontatos;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -787,10 +785,10 @@ public class Frameprincipal extends javax.swing.JFrame {
        entitymanager = factory.createEntityManager();
    }
    
-   private void desconectarBanco(){
-       entitymanager.close();
-       factory.close();
-   }
+   /*private void desconectarBanco(){
+   entitymanager.close();
+   factory.close();
+   }*/
    
    
     /**
