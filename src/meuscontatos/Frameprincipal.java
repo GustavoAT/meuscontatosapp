@@ -63,6 +63,7 @@ public class Frameprincipal extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("MeusContatos");
+        setMaximumSize(new java.awt.Dimension(600, 400));
         setMinimumSize(new java.awt.Dimension(549, 370));
 
         jscrolp_vis.setPreferredSize(new java.awt.Dimension(416, 318));
@@ -195,6 +196,8 @@ public class Frameprincipal extends javax.swing.JFrame {
         if (jtf_pesquisar.getText().equalsIgnoreCase("")) {
             jtf_pesquisar.setText("pesquisar...");
             jtf_pesquisar.setForeground(new java.awt.Color(153, 153, 153));
+            preencherJlist("");
+            atualizaVisualizacao();
         }
     }//GEN-LAST:event_jtf_pesquisarFocusLost
 
@@ -211,20 +214,16 @@ public class Frameprincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jList_nomesValueChanged
 
     private void jtf_pesquisarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtf_pesquisarKeyTyped
-        preencherJlist(jtf_pesquisar.getText());
+        String t = jtf_pesquisar.getText()+evt.getKeyChar();
+        preencherJlist(t);
+        atualizaVisualizacao();
     }//GEN-LAST:event_jtf_pesquisarKeyTyped
 
    private void preencherJlist(String nome){
        pessoas = entitymanager.createNamedQuery("Pessoa.findAll",Pessoa.class)
                .getResultList();
        if(!nome.equals("")){    
-           for (int i = 0; i < pessoas.size(); i++) {
-               if(!pessoas.get(i).getNomecompleto().contains(nome)){
-                   if (!pessoas.get(i).getTelefoneList().get(0).getTelefone().contains(nome)) {
-                       pessoas.remove(i);
-                   }
-               }
-           }
+           pessoas = filtrarPorNome(nome, pessoas);
        }
        String[] nomes;
        if(!pessoas.isEmpty()){
@@ -254,6 +253,16 @@ public class Frameprincipal extends javax.swing.JFrame {
             public String getElementAt(int i) { return strings[i]; }
         });
        jList_nomes.setSelectedIndex(0);
+   }
+   
+   private List<Pessoa> filtrarPorNome(String nome, List<Pessoa> pessoas){
+        List<Pessoa> p2 = new ArrayList<>();
+        for (Pessoa pe : pessoas) {
+            if(pe.getNomecompleto().contains(nome)||pe.getTelefoneList().get(0).getTelefone().contains(nome)){
+                p2.add(pe);
+            }
+        }
+        return p2;
    }
    
    private void iniciaTitulos(){
