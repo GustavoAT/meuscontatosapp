@@ -389,6 +389,8 @@ public class Frameprincipal extends javax.swing.JFrame {
         jPanel_vis.removeAll();
         jpaneltitulo.removeAll();
         jpanelft.removeAll();
+        jptel.removeAll();
+        jpemail.removeAll();
         
         jbt_editar.setEnabled(false);
         jbt_novo.setEnabled(false);
